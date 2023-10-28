@@ -1,11 +1,9 @@
+require('dotenv').config();
 const TelegramBot = require('node-telegram-bot-api');
 const express = require('express');
 const cors = require('cors');
 
-const token = '6077833689:AAGE4nZfxi0gCeBXfJjAe2fRfDNwKYyChjM';
-const webAppUrl = 'https://master--incandescent-buttercream-1b9fcb.netlify.app';
-
-const bot = new TelegramBot(token, { polling: true });
+const bot = new TelegramBot(process.env.TG_TOKEN, { polling: true });
 const app = express();
 
 app.use(express.json());
@@ -19,7 +17,7 @@ bot.on('message', async (msg) => {
 		await bot.sendMessage(chatId, 'Ниже появиться кнопка, заполни форму', {
 			reply_markup: {
 				keyboard: [
-					[{ text: 'Заполнить форму', web_app: { url: webAppUrl + '/Form' } }]
+					[{ text: 'Заполнить форму', web_app: { url: process.env.WEBAPP_URL + '/Form' } }]
 				]
 			}
 		})
@@ -27,7 +25,7 @@ bot.on('message', async (msg) => {
 		await bot.sendMessage(chatId, 'Заходи в наш интернет магазин по кнопке ниже', {
 			reply_markup: {
 				inline_keyboard: [
-					[{ text: 'Сделать заказ', web_app: { url: webAppUrl } }]
+					[{ text: 'Сделать заказ', web_app: { url: process.env.WEBAPP_URL } }]
 				]
 			}
 		})
@@ -58,7 +56,7 @@ app.post('/web-data', async (req, res) => {
 			id: queryId,
 			title: 'Успешная покупка',
 			input_message_content: {
-				message_text: ` Поздравляю с покупкой, вы приобрели товар на сумму ${totalPrice}, ${products.map(item => item.title).join(', ')}`
+				message_text: `Поздравляю с покупкой, вы приобрели товар на сумму ${totalPrice}, ${products.map(item => item.title).join(', ')}`
 			}
 		})
 		return res.status(200).json({})
@@ -67,6 +65,4 @@ app.post('/web-data', async (req, res) => {
 	}
 })
 
-const PORT = 8000;
-
-app.listen(PORT, () => console.log('server started on PORT ' + PORT))
+app.listen(process.env.PORT, () => console.log('server started on PORT ' + process.env.PORT))
