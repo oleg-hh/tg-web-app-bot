@@ -65,4 +65,4 @@ app.post('/web-data', async (req, res) => {
 	}
 })
 
-app.listen(process.env.PORT, () => console.log('server started on PORT ' + process.env.PORT))
+app.listen(PORT, () => console.log('server started on PORT ' + PORT))
